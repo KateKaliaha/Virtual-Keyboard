@@ -1,0 +1,92 @@
+/* .line1 {
+    width: 100px;
+    height: 100px;
+} */
+
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.textarea {
+    width: 800px;
+    height: 250px;
+    margin-bottom: 50px;
+}
+
+
+.keyboard {
+   padding: 10px;
+    width: 1197px;
+   background-color: #ffdbe6;
+    border: solid 2px #db7093;
+    border-radius: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    /* justify-content: center; */
+}
+
+.btn {
+    width: 70px;
+    height: 70px;
+    background-color: #ffced9;
+    border: solid 2px #db7093;
+    border-radius: 40px;
+    text-align: center;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+
+
+.btn.Space {
+
+    width: 345px;
+}
+
+.btn.Backspace,
+.btn.Tab {
+    font-size: 20px;
+    width: 130px;
+}
+
+.btn.CapsLock,
+.btn.Enter {
+    font-size: 20px;
+    width: 145px;
+}
+
+.btn.ShiftLeft {
+    font-size: 20px;
+    width: 210px;
+}
+
+.btn.ShiftRight,
+.btn.ArrowUp,
+.btn.ArrowDown,
+.btn.ArrowRight,
+.btn.ArrowLeft {
+    font-size: 20px;
+}
+
+.btn.MetaLeft,
+.btn.MetaRight {
+    font-size: 20px;
+    width: 120px;
+}
+
+.btn.AltLeft,
+.btn.AltRight,
+.btn.ControlLeft {
+    font-size: 20px;
+    width: 100px;
+}
+
