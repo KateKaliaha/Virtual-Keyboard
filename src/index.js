@@ -22,21 +22,22 @@ const ruLittle = ["]", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=
 // let line4 = [];
 // let line5 = [];
 // eslint-disable-next-line prefer-const
-let mas = [];
+// let mas = [];
 // eslint-disable-next-line prefer-const
-let key = [];
+// let key = [];
 
-document.onkeydown = function (event) {
-// console.log(event.key);
-  mas.push(event.code);
-  key.push(event.key);
-  console.log(mas);
-  console.log(key);
-};
+// document.onkeydown = function (event) {
+// // console.log(event.key);
+//   mas.push(event.code);
+//   key.push(event.key);
+//   console.log(mas);
+//   console.log(key);
+// };
 
 class VirtualKeyboard {
   constructor() {
     this.lang = "en";
+    this.ctrlShift = true;
   }
 
   createKeyboard() {
@@ -61,6 +62,14 @@ class VirtualKeyboard {
     // };
   }
 
+  //   fetch() {
+  //     const data = localStorage.getItem(this.lang, "lang");
+
+  //     if (data === null) { return false; }
+
+  //     return data;
+  //   }
+
   listenEvent() {
     this.textarea.onblur = () => {
       this.textarea.focus();
@@ -71,19 +80,35 @@ class VirtualKeyboard {
       const index = enCode.indexOf(cdn);
       const ruIndex = index;
       if (this.lang === "en") {
+        // localStorage.setItem(this.lang, "en");
         document.querySelector(`.keyboard .${event.code}`).classList.add("active");
         this.textarea.innerHTML += `${event.key}`;
       }
-      if (event.ctrlKey && event.shiftKey && this.lang === "en") {
+      if (this.lang === "ru") {
+        document.querySelector(`.keyboard .${event.code}`).classList.add("active");
+        this.textarea.innerHTML += ruLittle[ruIndex];
+      }
+      if (event.ctrlKey && event.shiftKey && this.ctrlShift === true) {
+        // const cdn = event.code;
+        // const index = enCode.indexOf(cdn);
+        // const ruIndex = index;
         this.lang = "ru";
         let out = "";
         for (let i = 0; i < ruLittle.length; i += 1) {
           out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
         }
         this.keyboard.innerHTML = out;
-      }
-      if (this.lang === "ru") {
-        this.textarea.innerHTML += ruLittle[ruIndex];
+        this.ctrlShift = false;
+      } else if (event.ctrlKey && event.shiftKey && this.ctrlShift === false) {
+        console.log(this.ctrlShift);
+        this.lang = "en";
+        let out = "";
+        for (let i = 0; i < enLittle.length; i += 1) {
+          out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+        }
+        this.keyboard.innerHTML = out;
+        this.textarea.innerHTML += `${event.key}`;
+        this.ctrlShift = true;
       }
     };
 
@@ -111,4 +136,5 @@ window.onload = () => {
   const myKeyboard = new VirtualKeyboard();
   myKeyboard.createKeyboard();
   myKeyboard.listenEvent();
+//   myKeyboard.fetch()
 };
