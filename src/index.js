@@ -11,33 +11,30 @@ const enLittle = ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=
   "caps lock", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "return",
   "shift", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "&#9650", "shift",
   "control", "option", "command", " ", "command", "option", "&#9668", "&#9660", "&#9658"];
+const enBig = ["~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "delete",
+  "tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}", "|",
+  "caps lock", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "\"", "return",
+  "shift", "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?", "&#9650", "shift",
+  "control", "option", "command", " ", "command", "option", "&#9668", "&#9660", "&#9658"];
 
 const ruLittle = ["]", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "delete",
   "tab", "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "ё",
   "caps lock", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "return",
   "shift", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", "/", "&#9650", "shift",
   "control", "option", "command", " ", "command", "option", "&#9668", "&#9660", "&#9658"];
-// let line2= [];
-// let line3 = [];
-// let line4 = [];
-// let line5 = [];
-// eslint-disable-next-line prefer-const
-// let mas = [];
-// eslint-disable-next-line prefer-const
-// let key = [];
-
-// document.onkeydown = function (event) {
-// // console.log(event.key);
-//   mas.push(event.code);
-//   key.push(event.key);
-//   console.log(mas);
-//   console.log(key);
-// };
+const ruBig = ["[", "!", "\"", "№", "%", ":", ",", ".", ";", "(", ")", "_", "+", "delete",
+  "tab", "Й", "Ц", "У", "К", "Е", "Н", "Г", "Ш", "Щ", "З", "Х", "Ъ", "Ё",
+  "caps lock", "Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э", "return",
+  "shift", "Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю", "?", "&#9650", "shift",
+  "control", "option", "command", " ", "command", "option", "&#9668", "&#9660", "&#9658"];
 
 class VirtualKeyboard {
   constructor() {
     this.lang = "en";
     this.ctrlShift = true;
+    this.caps = false;
+    this.size = true;
+    this.shift = false;
   }
 
   createKeyboard() {
@@ -51,15 +48,12 @@ class VirtualKeyboard {
     this.keyboard = document.createElement("div");
     this.keyboard.classList.add("keyboard");
     this.wrapper.appendChild(this.keyboard);
+
     let out = "";
     for (let i = 0; i < enLittle.length; i += 1) {
       out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
     }
     this.keyboard.innerHTML = out;
-    // document.onkeydown = (event) => {
-    //   console.log(event);
-    //   document.querySelector(`.keyboard .btn .${enCode[event]}`).classList.add("active");
-    // };
   }
 
   //   fetch() {
@@ -71,6 +65,7 @@ class VirtualKeyboard {
   //   }
 
   listenEvent() {
+    // this.textarea.focus();
     this.textarea.onblur = () => {
       this.textarea.focus();
     };
@@ -80,36 +75,173 @@ class VirtualKeyboard {
       const index = enCode.indexOf(cdn);
       const ruIndex = index;
       if (this.lang === "en") {
-        // localStorage.setItem(this.lang, "en");
-        document.querySelector(`.keyboard .${event.code}`).classList.add("active");
-        this.textarea.innerHTML += `${event.key}`;
+        localStorage.setItem("lang", "en");
+        if (event.shiftKey && event.getModifierState("CapsLock") === false) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${enBig[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+        } else if (event.shiftKey && event.getModifierState("CapsLock") === true) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${enBig[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+        } else if (event.getModifierState("CapsLock") && event.shiftKey === false) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            if (i === 13 || i === 14 || i === 28 || i === 40 || i === 41 || i === 52
+            || i === 53 || i === 54 || i === 55 || i === 56 || i === 58 || i === 59
+            || i === 60) {
+              this.out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+            } else {
+              this.out += `<div class="btn ${enCode[i]}">${enLittle[i].toUpperCase()}</div>`;
+            }
+            this.keyboard.innerHTML = this.out;
+          }
+        } else if (event.code === "CapsLock" && event.getModifierState("CapsLock")) {
+          if (event.getModifierState("CapsLock") && event.shiftKey === false) {
+            this.out = "";
+            for (let i = 0; i < enLittle.length; i += 1) {
+              if (i === 13 || i === 14 || i === 28 || i === 40 || i === 41 || i === 52
+            || i === 53 || i === 54 || i === 55 || i === 56 || i === 58 || i === 59
+            || i === 60) {
+                this.out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+              } else {
+                this.out += `<div class="btn ${enCode[i]}">${enLittle[i].toUpperCase()}</div>`;
+              }
+              this.keyboard.innerHTML = this.out;
+            }
+            this.caps = true;
+          }
+        } else if (event.getModifierState("CapsLock") === false && event.shiftKey === false) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+          this.caps = false;
+        }
+        if (event.code !== "Enter" && event.code !== "Backspace" && event.code !== "Tab"
+        && event.code !== "CapsLock" && event.code !== "ShiftLeft" && event.code !== "ShiftRight"
+        && event.code !== "ControlLeft" && event.code !== "AltLeft" && event.code !== "MetaLeft"
+        && event.code !== "MetaRight" && event.code !== "AltRight" && event.code !== "ArrowUp"
+        && event.code !== "ArrowLeft" && event.code !== "ArrowDown" && event.code !== "ArrowRight") {
+          this.textarea.innerHTML += `${event.key}`;
+        }
+        if (event.key === "Tab") {
+          event.preventDefault();
+          this.textarea.innerHTML += "\t";
+        }
       }
+
       if (this.lang === "ru") {
-        document.querySelector(`.keyboard .${event.code}`).classList.add("active");
-        this.textarea.innerHTML += ruLittle[ruIndex];
+        localStorage.setItem("lang", "ru");
+        if (event.shiftKey && event.getModifierState("CapsLock") === false) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${ruBig[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+        } else if (event.shiftKey && event.getModifierState("CapsLock") === true) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${ruBig[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+        } else if (event.getModifierState("CapsLock") && event.shiftKey === false) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            if (i === 13 || i === 14 || i === 28 || i === 40 || i === 41 || i === 52
+                      || i === 53 || i === 54 || i === 55 || i === 56 || i === 58 || i === 59
+                      || i === 60) {
+              this.out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
+            } else {
+              this.out += `<div class="btn ${enCode[i]}">${ruLittle[i].toUpperCase()}</div>`;
+            }
+          }
+          this.keyboard.innerHTML = this.out;
+          this.caps = true;
+        } else if (event.code === "CapsLock") {
+          if (event.getModifierState("CapsLock")) {
+            document.querySelector(".keyboard .CapsLock").classList.add("active-caps");
+            this.out = "";
+            for (let i = 0; i < enLittle.length; i += 1) {
+              if (i === 13 || i === 14 || i === 28 || i === 40 || i === 41 || i === 52
+                      || i === 53 || i === 54 || i === 55 || i === 56 || i === 58 || i === 59
+                      || i === 60) {
+                this.out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
+              } else {
+                this.out += `<div class="btn ${enCode[i]}">${ruLittle[i].toUpperCase()}</div>`;
+              }
+            }
+            this.keyboard.innerHTML = this.out;
+            this.caps = true;
+          }
+        } else if (event.getModifierState("CapsLock") === false) {
+          this.out = "";
+          for (let i = 0; i < ruLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+          this.caps = false;
+        }
+        if (event.code !== "Enter" && event.code !== "Backspace" && event.code !== "Tab"
+         && event.code !== "CapsLock" && event.code !== "ShiftLeft" && event.code !== "ShiftRight"
+         && event.code !== "ControlLeft" && event.code !== "AltLeft" && event.code !== "MetaLeft"
+         && event.code !== "MetaRight" && event.code !== "AltRight" && event.code !== "ArrowUp"
+         && event.code !== "ArrowLeft" && event.code !== "ArrowDown" && event.code !== "ArrowRight") {
+          if (this.caps) {
+            this.textarea.innerHTML += ruLittle[ruIndex].toUpperCase();
+          } else if (event.shiftKey) {
+            this.textarea.innerHTML += ruBig[ruIndex];
+          } else {
+            this.textarea.innerHTML += ruLittle[ruIndex];
+          }
+        }
+        if (event.key === "Tab") {
+          event.preventDefault();
+          this.textarea.innerHTML += "\t";
+        }
       }
       if (event.ctrlKey && event.shiftKey && this.ctrlShift === true) {
-        // const cdn = event.code;
-        // const index = enCode.indexOf(cdn);
-        // const ruIndex = index;
         this.lang = "ru";
-        let out = "";
+        this.out = "";
         for (let i = 0; i < ruLittle.length; i += 1) {
-          out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
+          this.out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
         }
-        this.keyboard.innerHTML = out;
+        this.keyboard.innerHTML = this.out;
         this.ctrlShift = false;
       } else if (event.ctrlKey && event.shiftKey && this.ctrlShift === false) {
-        console.log(this.ctrlShift);
         this.lang = "en";
-        let out = "";
+        this.out = "";
         for (let i = 0; i < enLittle.length; i += 1) {
-          out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+          this.out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
         }
-        this.keyboard.innerHTML = out;
-        this.textarea.innerHTML += `${event.key}`;
+        this.keyboard.innerHTML = this.out;
         this.ctrlShift = true;
       }
+      if (event.key === "Enter") {
+        this.textarea.innerHTML += "\n";
+      }
+      if (event.key === "ArrowUp") {
+        this.textarea.innerHTML += "&#8593";
+      }
+      if (event.key === "ArrowLeft") {
+        this.textarea.innerHTML += "&#8592";
+      }
+      if (event.key === "ArrowDown") {
+        this.textarea.innerHTML += "&#8595";
+      }
+      if (event.key === "ArrowRight") {
+        this.textarea.innerHTML += "&#8594";
+      }
+      //   if (event.key === "Backspace") {
+      //     this.textarea.innerHTML += this.textarea.innerHTML.slice(0, -1);
+      //     console.log(event)
+      //   }
+      document.querySelector(`.keyboard .${event.code}`).classList.add("active");
     };
 
     document.onkeyup = (event) => {
@@ -120,14 +252,16 @@ class VirtualKeyboard {
       if (event.target.classList.contains("btn")) {
         event.target.classList.add("active");
         this.textarea.innerHTML += event.target.innerHTML;
-        // this.textarea.innerHTML = document.querySelector(`.keyboard .${event.code}`).innerHTML;
       }
+    //   if (event.key === "Backspace") {
+    //     this.textarea.innerHTML = this.textarea.innerHTML.slice(-1, 1);
+    //   }
     });
 
     document.addEventListener("mouseup", (event) => {
-      if (event.target.classList.contains("btn")) {
-        event.target.classList.remove("active");
-      }
+    //   if (event.target.classList.contains("btn")) {
+      event.target.classList.remove("active");
+    //   }
     });
   }
 }
@@ -136,5 +270,5 @@ window.onload = () => {
   const myKeyboard = new VirtualKeyboard();
   myKeyboard.createKeyboard();
   myKeyboard.listenEvent();
-//   myKeyboard.fetch()
+//   myKeyboard.fetch();
 };
