@@ -47,21 +47,21 @@ class VirtualKeyboard {
     this.keyboard = document.createElement("div");
     this.keyboard.classList.add("keyboard");
     this.wrapper.appendChild(this.keyboard);
-
-    let out = "";
-    for (let i = 0; i < enLittle.length; i += 1) {
-      out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+    this.fetch()
+    if (this.lang === "en") {
+      let out = "";
+      for (let i = 0; i < enLittle.length; i += 1) {
+        out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+      }
+      this.keyboard.innerHTML = out;
+    } else {
+      let out = "";
+      for (let i = 0; i < ruLittle.length; i += 1) {
+        out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
+      }
+      this.keyboard.innerHTML = out;
     }
-    this.keyboard.innerHTML = out;
   }
-
-  //   fetch() {
-  //     const data = localStorage.getItem(this.lang, "lang");
-
-  //     if (data === null) { return false; }
-
-  //     return data;
-  //   }
 
   listenEvent() {
     this.textarea.onblur = () => {
@@ -204,6 +204,7 @@ class VirtualKeyboard {
         }
       }
       if (event.ctrlKey && event.shiftKey && this.ctrlShift === true) {
+        localStorage.setItem("lang", "ru");
         this.lang = "ru";
         this.out = "";
         for (let i = 0; i < ruLittle.length; i += 1) {
@@ -212,6 +213,7 @@ class VirtualKeyboard {
         this.keyboard.innerHTML = this.out;
         this.ctrlShift = false;
       } else if (event.ctrlKey && event.shiftKey && this.ctrlShift === false) {
+        localStorage.setItem("lang", "en");
         this.lang = "en";
         this.out = "";
         for (let i = 0; i < enLittle.length; i += 1) {
@@ -234,6 +236,9 @@ class VirtualKeyboard {
       }
       if (event.key === "ArrowRight") {
         this.textarea.innerHTML += "&#8594";
+      }
+      if (event.key === "Backspace") {
+        this.textarea.innerHTML = this.textarea.innerHTML.slice(0, -1);
       }
       document.querySelector(`.keyboard .${event.code}`).classList.add("active");
     };
@@ -292,6 +297,7 @@ class VirtualKeyboard {
       }
 
       if (this.lang === "en") {
+        localStorage.setItem("lang", "en");
         if (event.target.classList.contains("CapsLock") && this.caps === false) {
           for (let i = 0; i < buttons.length; i += 1) {
             if (buttons[i].innerHTML.length === 1) {
@@ -360,6 +366,7 @@ class VirtualKeyboard {
         }
       }
       if (this.lang === "ru") {
+        localStorage.setItem("lang", "ru");
         if (event.target.classList.contains("ShiftLeft") || event.target.classList.contains("ShiftRight")) {
           for (let i = 0; i < buttons.length; i += 1) {
             if (buttons[i].innerHTML.length === 1) {
@@ -413,7 +420,9 @@ class VirtualKeyboard {
           this.caps = false;
         }
       }
-      event.target.classList.add("active");
+      if (event.target.classList.contains("btn")) {
+        event.target.classList.add("active");
+      }
     });
 
     document.addEventListener("mouseup", (event) => {
@@ -438,11 +447,25 @@ class VirtualKeyboard {
       }
     });
   }
+
+  fetch() {
+      if (localStorage.getItem("lang") === null) {
+          this.lang = "en";
+      }
+      if (localStorage.getItem("lang") !== null) {
+        const data = localStorage.getItem("lang");
+        this.lang = data;
+      }
+    // const data = localStorage.getItem("lang");
+    // console.log(data);
+    // this.lang = data;
+    // console.log(this.lang);
+  }
 }
 
 window.onload = () => {
   const myKeyboard = new VirtualKeyboard();
+  myKeyboard.fetch();
   myKeyboard.createKeyboard();
   myKeyboard.listenEvent();
-//   myKeyboard.fetch();
 };
