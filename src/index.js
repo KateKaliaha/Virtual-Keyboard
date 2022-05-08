@@ -1,4 +1,3 @@
-// let line1 = [192, 97, 98, 99, 100, 101, 102, 103, 104, 105, 96, 189, 61, 8];
 const enCode = ["Backquote", "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8",
   "Digit9", "Digit0", "Minus", "Equal", "Backspace", "Tab", "KeyQ", "KeyW", "KeyE", "KeyR", "KeyT",
   "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "BracketLeft", "BracketRight", "Backslash", "CapsLock",
@@ -65,7 +64,6 @@ class VirtualKeyboard {
   //   }
 
   listenEvent() {
-    // this.textarea.focus();
     this.textarea.onblur = () => {
       this.textarea.focus();
     };
@@ -237,31 +235,207 @@ class VirtualKeyboard {
       if (event.key === "ArrowRight") {
         this.textarea.innerHTML += "&#8594";
       }
-      //   if (event.key === "Backspace") {
-      //     this.textarea.innerHTML += this.textarea.innerHTML.slice(0, -1);
-      //     console.log(event)
-      //   }
       document.querySelector(`.keyboard .${event.code}`).classList.add("active");
     };
 
     document.onkeyup = (event) => {
+      if (this.lang === "en") {
+        if (event.getModifierState("CapsLock") === false && event.shiftKey === false) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+          this.caps = false;
+        }
+      }
+      if (this.lang === "ru") {
+        if (event.getModifierState("CapsLock") === false && event.shiftKey === false) {
+          this.out = "";
+          for (let i = 0; i < ruLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+          this.caps = false;
+        }
+      }
       document.querySelector(`.keyboard .${event.code}`).classList.remove("active");
     };
 
     document.addEventListener("mousedown", (event) => {
-      if (event.target.classList.contains("btn")) {
-        event.target.classList.add("active");
+      const buttons = document.querySelectorAll(".btn");
+      if (event.target.innerHTML.length === 1 && !event.target.classList.contains("ArrowUp")
+        && !event.target.classList.contains("ArrowLeft") && !event.target.classList.contains("ArrowDown")
+        && !event.target.classList.contains("ArrowRight")) {
         this.textarea.innerHTML += event.target.innerHTML;
       }
-    //   if (event.key === "Backspace") {
-    //     this.textarea.innerHTML = this.textarea.innerHTML.slice(-1, 1);
-    //   }
+      if (event.target.innerHTML === "return") {
+        this.textarea.innerHTML += "\n";
+      }
+      if (event.target.innerHTML === "delete") {
+        this.textarea.innerHTML = this.textarea.innerHTML.slice(0, -1);
+      }
+      if (event.target.classList.contains("ArrowUp")) {
+        this.textarea.innerHTML += "&#8593";
+      }
+      if (event.target.classList.contains("ArrowLeft")) {
+        this.textarea.innerHTML += "&#8592";
+      }
+      if (event.target.classList.contains("ArrowDown")) {
+        this.textarea.innerHTML += "&#8595";
+      }
+      if (event.target.classList.contains("ArrowRight")) {
+        this.textarea.innerHTML += "&#8594";
+      }
+      if (event.target.innerHTML === "tab") {
+        this.textarea.innerHTML += "\t";
+      }
+
+      if (this.lang === "en") {
+        if (event.target.classList.contains("CapsLock") && this.caps === false) {
+          for (let i = 0; i < buttons.length; i += 1) {
+            if (buttons[i].innerHTML.length === 1) {
+              buttons[i].innerHTML = buttons[i].innerHTML.toUpperCase();
+            }
+          }
+          this.caps = true;
+        } else if (event.target.classList.contains("CapsLock") && this.caps === true) {
+          for (let i = 0; i < buttons.length; i += 1) {
+            if (buttons[i].innerHTML.length === 1) {
+              buttons[i].innerHTML = buttons[i].innerHTML.toLocaleLowerCase();
+            }
+          }
+          this.caps = false;
+        }
+        if (event.target.classList.contains("ShiftLeft") || event.target.classList.contains("ShiftRight")) {
+          for (let i = 0; i < buttons.length; i += 1) {
+            if (buttons[i].innerHTML.length === 1) {
+              if (buttons[i].innerHTML === "`") {
+                buttons[i].innerHTML = "~";
+              } else if (buttons[i].innerHTML === "1") {
+                buttons[i].innerHTML = "!";
+              } else if (buttons[i].innerHTML === "2") {
+                buttons[i].innerHTML = "@";
+              } else if (buttons[i].innerHTML === "3") {
+                buttons[i].innerHTML = "#";
+              } else if (buttons[i].innerHTML === "4") {
+                buttons[i].innerHTML = "$";
+              } else if (buttons[i].innerHTML === "5") {
+                buttons[i].innerHTML = "%";
+              } else if (buttons[i].innerHTML === "6") {
+                buttons[i].innerHTML = "^";
+              } else if (buttons[i].innerHTML === "7") {
+                buttons[i].innerHTML = "&";
+              } else if (buttons[i].innerHTML === "8") {
+                buttons[i].innerHTML = "*";
+              } else if (buttons[i].innerHTML === "9") {
+                buttons[i].innerHTML = "(";
+              } else if (buttons[i].innerHTML === "0") {
+                buttons[i].innerHTML = ")";
+              } else if (buttons[i].innerHTML === "-") {
+                buttons[i].innerHTML = "_";
+              } else if (buttons[i].innerHTML === "=") {
+                buttons[i].innerHTML = "+";
+              } else if (buttons[i].innerHTML === "[") {
+                buttons[i].innerHTML = "{";
+              } else if (buttons[i].innerHTML === "]") {
+                buttons[i].innerHTML = "}";
+              } else if (buttons[i].innerHTML === "\\") {
+                buttons[i].innerHTML = "|";
+              } else if (buttons[i].innerHTML === ";") {
+                buttons[i].innerHTML = ":";
+              } else if (buttons[i].innerHTML === "'") {
+                buttons[i].innerHTML = "\"";
+              } else if (buttons[i].innerHTML === ",") {
+                buttons[i].innerHTML = "<";
+              } else if (buttons[i].innerHTML === ".") {
+                buttons[i].innerHTML = ">";
+              } else if (buttons[i].innerHTML === "/") {
+                buttons[i].innerHTML = "?";
+              } else {
+                buttons[i].innerHTML = buttons[i].innerHTML.toUpperCase();
+              }
+            }
+          }
+        }
+      }
+      if (this.lang === "ru") {
+        if (event.target.classList.contains("ShiftLeft") || event.target.classList.contains("ShiftRight")) {
+          for (let i = 0; i < buttons.length; i += 1) {
+            if (buttons[i].innerHTML.length === 1) {
+              if (buttons[i].innerHTML === "]") {
+                buttons[i].innerHTML = "[";
+              } else if (buttons[i].innerHTML === "1") {
+                buttons[i].innerHTML = "!";
+              } else if (buttons[i].innerHTML === "2") {
+                buttons[i].innerHTML = "\"";
+              } else if (buttons[i].innerHTML === "3") {
+                buttons[i].innerHTML = "№";
+              } else if (buttons[i].innerHTML === "4") {
+                buttons[i].innerHTML = "%";
+              } else if (buttons[i].innerHTML === "5") {
+                buttons[i].innerHTML = ":";
+              } else if (buttons[i].innerHTML === "6") {
+                buttons[i].innerHTML = ",";
+              } else if (buttons[i].innerHTML === "7") {
+                buttons[i].innerHTML = ".";
+              } else if (buttons[i].innerHTML === "8") {
+                buttons[i].innerHTML = ";";
+              } else if (buttons[i].innerHTML === "9") {
+                buttons[i].innerHTML = "(";
+              } else if (buttons[i].innerHTML === "0") {
+                buttons[i].innerHTML = ")";
+              } else if (buttons[i].innerHTML === "-") {
+                buttons[i].innerHTML = "_";
+              } else if (buttons[i].innerHTML === "=") {
+                buttons[i].innerHTML = "+";
+              } else if (buttons[i].innerHTML === "/") {
+                buttons[i].innerHTML = "?";
+              } else {
+                buttons[i].innerHTML = buttons[i].innerHTML.toUpperCase();
+              }
+            }
+          }
+        }
+        if (event.target.classList.contains("CapsLock") && this.caps === false) {
+          for (let i = 0; i < buttons.length; i += 1) {
+            if (buttons[i].innerHTML.length === 1) {
+              buttons[i].innerHTML = buttons[i].innerHTML.toUpperCase();
+            }
+          }
+          this.caps = true;
+        } else if (event.target.classList.contains("CapsLock") && this.caps === true) {
+          for (let i = 0; i < buttons.length; i += 1) {
+            if (buttons[i].innerHTML.length === 1) {
+              buttons[i].innerHTML = buttons[i].innerHTML.toLocaleLowerCase();
+            }
+          }
+          this.caps = false;
+        }
+      }
+      event.target.classList.add("active");
     });
 
     document.addEventListener("mouseup", (event) => {
-    //   if (event.target.classList.contains("btn")) {
       event.target.classList.remove("active");
-    //   }
+      if (this.lang === "en") {
+        if (event.target.classList.contains("ShiftLeft") || event.target.classList.contains("ShiftRight")) {
+          this.out = "";
+          for (let i = 0; i < enLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${enLittle[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+        }
+      }
+      if (this.lang === "ru") {
+        if (event.target.classList.contains("ShiftLeft") || event.target.classList.contains("ShiftRight")) {
+          this.out = "";
+          for (let i = 0; i < ruLittle.length; i += 1) {
+            this.out += `<div class="btn ${enCode[i]}">${ruLittle[i]}</div>`;
+          }
+          this.keyboard.innerHTML = this.out;
+        }
+      }
     });
   }
 }
