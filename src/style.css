@@ -1,7 +1,6 @@
-/* .line1 {
-    width: 100px;
-    height: 100px;
-} */
+html {
+    background: #f0dce0;
+}
 
 
 .wrapper {
@@ -17,6 +16,9 @@
     width: 800px;
     height: 250px;
     margin-bottom: 50px;
+    pointer-events: none;
+    background: #fff0f5;
+    font-size: 20px;
 }
 
 
@@ -98,4 +100,19 @@
 .active-caps {
     background-color: #ffdbe6;
     box-shadow: inset 1px 1px 2px -1px
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 1100px;
+    font-size: 35px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.text p {
+    margin: 0;
+   
 }

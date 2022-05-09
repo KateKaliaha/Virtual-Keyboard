@@ -47,7 +47,7 @@ class VirtualKeyboard {
     this.keyboard = document.createElement("div");
     this.keyboard.classList.add("keyboard");
     this.wrapper.appendChild(this.keyboard);
-    this.fetch()
+    this.fetch();
     if (this.lang === "en") {
       let out = "";
       for (let i = 0; i < enLittle.length; i += 1) {
@@ -61,10 +61,16 @@ class VirtualKeyboard {
       }
       this.keyboard.innerHTML = out;
     }
+    this.text = document.createElement("div");
+    this.text.classList.add("text");
+    this.text.innerHTML = `<p>Клавиатура создана в операционной системе Mac OS</p>
+     <p>Для переключения языка комбинация: control (ctrl left) + shift</p>
+    <p>Кнопка delete в Mac OS работает как backspace (особенность ОС)</p>`;
+    this.wrapper.appendChild(this.text);
   }
 
   listenEvent() {
-    this.textarea.onblur = () => {
+    this.textarea.blur = () => {
       this.textarea.focus();
     };
 
@@ -449,17 +455,13 @@ class VirtualKeyboard {
   }
 
   fetch() {
-      if (localStorage.getItem("lang") === null) {
-          this.lang = "en";
-      }
-      if (localStorage.getItem("lang") !== null) {
-        const data = localStorage.getItem("lang");
-        this.lang = data;
-      }
-    // const data = localStorage.getItem("lang");
-    // console.log(data);
-    // this.lang = data;
-    // console.log(this.lang);
+    if (localStorage.getItem("lang") === null) {
+      this.lang = "en";
+    }
+    if (localStorage.getItem("lang") !== null) {
+      const data = localStorage.getItem("lang");
+      this.lang = data;
+    }
   }
 }
 
