@@ -132,7 +132,13 @@ class VirtualKeyboard {
         && event.code !== "ControlLeft" && event.code !== "AltLeft" && event.code !== "MetaLeft"
         && event.code !== "MetaRight" && event.code !== "AltRight" && event.code !== "ArrowUp"
         && event.code !== "ArrowLeft" && event.code !== "ArrowDown" && event.code !== "ArrowRight") {
-          this.textarea.innerHTML += `${event.key}`;
+          if (event.getModifierState("CapsLock") && event.shiftKey === false) {
+            this.textarea.innerHTML += enLittle[index].toUpperCase();
+          } else if (event.shiftKey) {
+            this.textarea.innerHTML += enBig[index];
+          } else {
+            this.textarea.innerHTML += enLittle[index];
+          }
         }
         if (event.key === "Tab") {
           event.preventDefault();
